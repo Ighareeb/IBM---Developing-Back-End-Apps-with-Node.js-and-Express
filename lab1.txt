@@ -1,0 +1,45 @@
+Verify that node CLI is installed : <node --version>
+
+You should see output similar to this, though the versions may be different: v16.13.0
+
+Change to your project folder. <cd project folder>
+
+Clone the git repository that contains the artifacts needed for this lab, if it doesn’t already exist.
+<git clone https://github.com/ibm-developer-skills-network/lkpho-Cloud-applications-with-Node.js-and-React.git>
+
+Change to the directory for this lab: <cd lkpho-Cloud-applications-with-Node.js-and-React/CD220Labs/http_server>
+
+List the contents of this directory to see the artifacts for this lab: <ls>
+
+<cat filename> to check contents of file
+Check the content of index.js. This is the server side script we will run in the next section: <cat index.js>
+
+start the server: <node index.js>
+You should see output similar to this:<server listening on port: 8080>
+
+use the curl command to ping the application: <curl http://localhost:8080>
+(indicates that app is running)
+
+const http = require('http');
+const today = require('./today');
+SOLUTION LAB 1
+const requestListener = function (req, res) {
+  res.writeHead(200);
+  let dateVal = today.getDate();
+  let greeting = "It is still not morning"
+  if (dateVal.getHours()>6 && dateVal.getHours()<12) {
+    greeting = "Good morning!"
+  } else if (dateVal.getHours()>=12 && dateVal.getHours()<18) {
+    greeting = "Good afternoon!"
+  }else if (dateVal.getHours()>=18 && dateVal.getHours()<21) {
+    greeting = "Good evening!"
+  }else if (dateVal.getHours()>=21 && dateVal.getHours()<24) {
+    greeting = "Good night!"
+  }
+  res.end(`Hello, ${greeting}`);
+}
+
+const port = 8080;
+const server = http.createServer(requestListener);
+console.log('server listening on port: ' + port);
+server.listen(port);
