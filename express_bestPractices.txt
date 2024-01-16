@@ -1,0 +1,28 @@
+-Most web frameworks have required directory strutures for storing files
+-Express does not require a pre-defined directory structure for its app, however defining it in advance helps with maintainability as app scales.
+--conventional folders used in the project folder:
+-->node modules: containes apps modules and packages; created automatically with npm install
+-->config: should contain configuration files such as db connection configuration, env variables and credential file (with API keys for external services used by the app)
+-->models: contains  the data models for the app which specify the type of datastore (eg. relational or non-relational) defined by an object-relational mapping (ORM) library
+-->routes: used to specify all the routes for the different entities in different files. There should be one fole for each logical set of routes (eg. one file for one type of resource)
+-->views: contains template files which dynamically write HTML, CSS and JS to send back to the client.
+-->public: containes all static content (eg. images, CSS, JS), with subfolders for each if needed.
+PROJECT folder files:
+-->app.js: main configuration file for app
+-->routes.js: central location to access all routes in app. requies/imports all the files in the routes folder and then exports them as a single module (which is imported into the app.js file). This creates a single point of entry for all the routes in the app.
+-->package.json: contains the metadata used to manage the project's dependencies
+
+API directory structure - similar to Project folder (does not need views or public folders)
+
+MOCHA
+Black-box testing - testing the code without looking at its internal structure. The system is tested as a whole without mocked or stubbed dependencies.
+Mocha is a JS testing framework that runs on Node and contains a simple module 'supertest' which provides a way to test HTTP request to test on REST API.
+
+Best practice to use JWT Web token or JWT based stateless authentication.
+-Since REST API must be stateless, authentication needs to be as well. Stateless authentication verifies users by suppling most of the session info (eg. user properties) from the client side.
+
+Importance of API Documentation:
+https://apiblueprint.org/
+https://swagger.io/
+
+when using npm install include --save or --save-dev to make sure that if the app is deployed/moved to a different platform, the correct dependencies will be installed with it.
