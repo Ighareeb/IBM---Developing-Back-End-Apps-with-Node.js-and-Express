@@ -53,14 +53,113 @@
 // connectToURLasync('https://api.publicapis.org/entries');
 //------------------------------------------------------------------
 // //Example -  simple express server
-const express = require('express');
-const app = express(); //create instance (obj) of express framework API
-//use {app} to set up your server, define routes, and listen for incoming requests.
-const port = 3000;
-app.get('/', (req, req) => {
-	//logic
-});
-//start HTTP server
-let server = app.listen(port, () => {
-	console.log(`Server is listening on URL http://localhost:${port}`);
-});
+// const express = require('express');
+// const app = express(); //create instance (obj) of express framework API
+// //use {app} to set up your server, define routes, and listen for incoming requests.
+// const port = 3000;
+// app.get('/', (req, req) => {
+// 	//logic
+// });
+// //start-create instance of HTTP server to listen for incoming requests
+// let server = app.listen(port, () => {
+// 	console.log(`Server is listening on URL http://localhost:${port}`);
+// });
+//------------------------------------------------------------------
+// //Example - express route handling (at app level)
+// const express = require('express');
+// const app = express();
+
+// app.get('users/about/:id', req, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// app.post('users/about/:id', res, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// app.get('item/about/:id', req, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// app.post('item/about/:id', res, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// app.listen(3000, () => {
+// 	console.log('Server is listening on port 3000');
+// });
+//------------------------------------------------------------------
+// //Example - express route handling (at Router level)
+// const express = require('express');
+// const app = express();
+// //create a router instance which can be mounted as middleware, used to define routes in modular way.
+// let userRouter = express.Router();
+// app.use('/users', userRouter); //app.use mounts the router to the base route path
+// let itemRouter = express.Router();
+// app.use('/item', itemRouter);
+
+// userRouter.get('/about/:id', req, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// userRouter.post('/about/:id', res, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// itemRouter.get('/about/:id', req, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// itemRouter.post('/about/:id', res, (res) => {
+// 	res.send('Response about user ' + req.params.id);
+// });
+// app.listen(3000, () => {
+// 	console.log('Server is listening on port 3000');
+// });
+//------------------------------------------------------------------
+// //Example - express error handling
+// const express = require('express');
+// const app = express();
+// app.use('/user/:id', (req, res, next) => {
+// 	if (req.params.id === 1) {
+// 		throw new Error('Trying to access admin login');
+// 	} else {
+// 		next();
+// 	}
+// });
+// app.use((err, req, res, next) => {
+// 	if (err !== null) {
+// 		res.status(500).send(err.toString());
+// 	} else {
+// 		next();
+// 	}
+// });
+// app.get('/user/:id', (req, res) => {
+// 	return res.send('Hello! User Id ' + req.params.id);
+// });
+
+// app.listen(3000, () => {
+// 	console.log('Server is listening on port 3000');
+// });
+//------------------------------------------------------------------
+// //Example - express built-in middleware
+// const express = require('express');
+// const app = express();
+// app.use(express.static(`${fileName_path}`))
+// app.listen(3000, () => {
+// 	console.log('Server is listening on port 3000');
+// });
+//------------------------------------------------------------------
+// //Example - Template rendering (rendering dynamic content with express + react)
+// const express = require('express');
+// const app = express();
+// // import the express-react-views module, which is a JSX view engine for Express.
+// const expressReactViews = require('express-react-views');
+// //create a new instance of the JSX view engine.
+// const jsxEngine = expressReactViews.createEngine();
+// //set the view engine to use the JSX view engine
+// app.set('view engine', 'jsx');
+// //set the view directory to myviews. Express will look for JSX files in the dir when res.render is called
+// app.set('view', 'myviews');
+// //register the JSX view engine instance with express
+// app.engine('jsx', jsxEngine);
+// //setup route handler
+// app.get('/:name', (req, res) => {
+// 	res.render('index', { name: req.params.name });
+// });
+// app.listen(3000, () => {
+// 	console.log('Server is listening on port 3000');
+// });
