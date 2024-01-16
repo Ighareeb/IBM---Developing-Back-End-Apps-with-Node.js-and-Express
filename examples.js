@@ -163,3 +163,42 @@
 // app.listen(3000, () => {
 // 	console.log('Server is listening on port 3000');
 // });
+//------------------------------------------------------------------
+// //Example Authentication
+const jsonwebtoken = require('jsonwebtoken');
+const express = require('express');
+
+const app = express();
+//note: JWT secret should always be generated using a password generator and stored in config file as env variable not hard-coded like this example.
+const JWT_SECRET = 'secretString';
+app.use(express.json());
+//create endpoint for user API
+app.get('/user', (req, res) => {
+	let tkn = req.header('Authorization');
+	if (!tkn) return res.status.send('No Token');
+	if (tkn.startsWith('Bearer ')) {
+		tokenValue = tkn.slice(7, tkn.length).trimLeft();
+	}
+	try {
+		const verificationStatus = jsonwebtoken.verify(tokenValue, JWT_SECRET);
+		if (verificationStatus.user === 'user') {
+			return res.status(200).json('User is authenticated');
+		}
+	} catch {
+		return res.status(401).json({ message: 'Please login to access resource' });
+	}
+});
+app.post('/signin', (req, res) => {
+	//compare username, password from the reqquest body with values fetched from db
+	//if they match JWT is generated using jsonwebtoken.sign()
+	const { username, password } = req.body;
+	if (username === 'user' && password === 'password') {
+		return res.json({
+			token: jsonwebtoken.sign({ user: 'user' }, JWT_SECRET),
+		});
+	}
+	return res.status(201).json({ message: 'Invalid username and/or password' });
+});
+app.listen(3000, () => {
+	console.log('Server is listening on port 3000');
+});
