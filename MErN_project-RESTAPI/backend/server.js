@@ -1,6 +1,10 @@
 const express = require('express'); //BE web framework
 const dotenv = require('dotenv').config();
 const errorHandler = require('./middleware/errorMiddleware');
+const connectDB = require('./config/db');
+const colors = require('colors'); // adds colors to Node.js console eg. change text/background cololr, apply themes, create custom styles
+
+connectDB();
 
 const PORT = process.env.PORT || 5000;
 
