@@ -2,6 +2,10 @@ const weatherDisplay = document.querySelector('.weather');
 const weatherForm = document.querySelector('#weather-form');
 const cityInput = document.querySelector('#city-input');
 
+//convert temp to Celcius
+const kelvinToCelsius = (temp) => {
+	return Math.floor(temp - 273.15);
+};
 //fetch weather from API + utility functions
 const fetchWeather = async (city) => {
 	const url = `/api?q=${city}`;
@@ -28,10 +32,6 @@ const fetchWeather = async (city) => {
 const addWeatherToDOM = (data) => {
 	weatherDisplay.innerHTML = `<h1>Weather in ${data.city}</h1><h2>${data.temp} &deg;C</h2>`;
 	cityInput.value = '';
-};
-//convert temp to Celcius
-const kelvinToCelcius = (temp) => {
-	return Math.floor(temp - 273.15);
 };
 //EVENT LISTENER for form submission
 weatherForm.addEventListener('submit', (e) => {

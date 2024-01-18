@@ -12,10 +12,17 @@ const limiter = rateLimit({
 	windowMs: 10 * 60 * 1000, //10 min
 	max: 5, //max 5 requests per 10 min
 });
+
 app.use(limiter);
+
 app.set('trust proxy', 1);
+
+//set static folder (HTML, CSS, JS)
+app.use(express.static('./public'));
+
 //routes
 app.use('/api', router);
+
 //enable cors(cross-origin resource sharing) in express - acts as a connect/express middleware that adds CORS headers to res and tell browser which domains are allowed to access resources and what methods they can use
 app.use(cors());
 
