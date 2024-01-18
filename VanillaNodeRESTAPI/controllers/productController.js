@@ -86,8 +86,55 @@ async function createProduct(req, res) {
 		console.log(err);
 	}
 }
+//PUT update product /api/products/:id
+async function updateProduct(req, res, id) {
+	try {
+		const product = await Product.findById(id);
+
+		if (!product) {
+			res.writeHead(404, { 'content-type': 'application/json' });
+			res.end(JSON.stringify({ message: 'Product Not Found' }));
+		} else {
+			const body = await getPostData(req);
+
+			const { id, title, description, price } = JSON.parse(body);
+
+			const productData = {
+				title: title || product.title, //OR is added so we don't need to send all props to update specific one
+				description: description || product.description,
+				price: price || product.price,
+			};
+
+			const updatedProduct = await Product.update(id, productData);
+			res.writeHead(200, { 'content-type': 'application/json' });
+
+			return res.end(JSON.stringify(updatedProduct));
+		}
+	} catch (err) {
+		console.log(err);
+	}
+}
+////DELETE product /api/products/:id
+async function deleteProduct(req, res, id) {
+	try {
+		const product = await Product.findById(id);
+		if (!product) {
+			res.write(404, { 'content-type': 'application/json' });
+			res.end(JSON.stringify({ message: 'Product Not Found' }));
+		} else {
+			await Product.remove(id);
+			res.writeHead(200, { 'content-type': 'application/json' });
+			res.end(JSON.stringify({ message: `Product ${id} was deleted` }));
+		}
+	} catch (err) {
+		console.log(err);
+	}
+}
+
 module.exports = {
 	getProducts,
 	getProduct,
 	createProduct,
+	updateProduct,
+	deleteProduct,
 };

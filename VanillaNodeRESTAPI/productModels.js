@@ -1,7 +1,7 @@
 //handle CRUD operations on the data
 
 const { v4: uuidv4 } = require('uuid'); //to generate id for new products
-const products = require('./data/products.json');
+let products = require('./data/products.json');
 const { writeDataToFile } = require('./utils.js'); //utility functions using fs module package
 function findAll() {
 	return new Promise((resolve, reject) => {
@@ -25,8 +25,30 @@ function create(product) {
 		resolve(newProduct);
 	});
 }
+
+function update(product, id) {
+	return new Promise((resolve, reject) => {
+		const index = products.findIndex((p) => p.id === id);
+		products[index] = { id, ...product };
+		if (process.env.NODE_ENV !== 'test') {
+			writeDataToFile('./data/products.json', products);
+		}
+		resolve(products[index]);
+	});
+}
+function remove(product, id) {
+	return new Promise((resolve, reject) => {
+		products = products.filter((p) => p.id !== id);
+		if (process.env.NODE_ENV !== 'test') {
+			writeDataToFile('./data/products.json', products);
+		}
+		resolve();
+	});
+}
 module.exports = {
 	findAll,
 	findById,
 	create,
+	update,
+	remove,
 };
