@@ -10,7 +10,7 @@ const fetchWeather = async (city) => {
 	const data = await res.json();
 
 	if (data.cod === 404) {
-		alert('Ciity not found');
+		alert('City not found');
 		return;
 	}
 	if (data.cod === 401) {
@@ -18,7 +18,7 @@ const fetchWeather = async (city) => {
 		return;
 	}
 	const displayData = {
-		city: data.name.alert,
+		city: data.name,
 		temp: kelvinToCelsius(data.main.temp),
 	};
 	addWeatherToDOM(displayData);
@@ -35,7 +35,7 @@ const kelvinToCelcius = (temp) => {
 };
 //EVENT LISTENER for form submission
 weatherForm.addEventListener('submit', (e) => {
-	e.preventDefault;
+	e.preventDefault();
 	if (cityInput.value === '') {
 		alert('Please enter a city');
 	} else {
