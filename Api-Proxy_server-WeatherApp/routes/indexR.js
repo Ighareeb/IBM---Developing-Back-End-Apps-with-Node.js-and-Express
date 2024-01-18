@@ -2,13 +2,17 @@ const url = require('url'); //will use built-in node module to pass client query
 const express = require('express');
 const router = express.Router();
 const needle = require('needle'); //lightweight HTTP client (eg use for API calls and dealing with res) - returns Promise
-
+const apicache = require('apicache'); //use to temporarily cache/store API call results (define time) before making new req to API
 //env variables
 const API_BASE_URL = process.env.API_BASE_URL;
 const API_KEY_NAME = process.env.API_KEY_NAME;
 const API_KEY_VALUE = process.env.API_KEY_VALUE;
+
+//Init cache - check headers res cache-control --> max-age (in this case == 2 min == 120s)
+let cache = apicache.middleware;
+
 //create route
-router.get('/', async (req, res) => {
+router.get('/', cache('2 minutes'), async (req, res) => {
 	try {
 		// console.log(url.parse(req.url, true).query);
 		const params = new URLSearchParams({
