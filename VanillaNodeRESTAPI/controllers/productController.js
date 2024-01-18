@@ -1,7 +1,7 @@
 //handle Routing Logic and interact with model data
 const Product = require('../productModels');
-//async because model function returns a promise
 
+//note:async because model function returns a promise
 //GET all products /api/products
 async function getProducts(req, res) {
 	try {
@@ -27,7 +27,24 @@ async function getProduct(req, res, id) {
 		console.log(error);
 	}
 }
+//POST new product /api/products
+async function createProduct(req, res) {
+	try {
+		const product = {
+			title: 'test static product',
+			description: 'test inserting static product',
+			price: 100,
+			//generate id with uuid package in productModels.js
+		};
+		const newProduct = await Product.create(product);
+		res.writeHead(201, { 'Content-type': 'application/json' });
+		return res.end(JSON.stringify(newProduct));
+	} catch (error) {
+		console.log(error);
+	}
+}
 module.exports = {
 	getProducts,
 	getProduct,
+	createProduct,
 };
