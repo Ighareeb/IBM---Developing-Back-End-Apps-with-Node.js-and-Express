@@ -2,6 +2,8 @@ const Goal = require('../models/goalsModels'); //has mongoose methods we can use
 
 const asyncHandler = require('express-async-handler'); //express doesn't handle async errors by default promise errors wouldn't be caught - wrap async route handlers with asyncHandler so it passes the error to our custom errorHandler middleware
 
+//CRUD functions/logic that will be used in our routes:
+
 //GET /api/goals -->get goals
 const getGoals = asyncHandler(async (req, res) => {
 	const goals = await Goal.find(); //find all goals from db

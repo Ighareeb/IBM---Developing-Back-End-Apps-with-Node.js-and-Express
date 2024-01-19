@@ -1,7 +1,7 @@
 {
 	"name": "mern_project-restapi",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Express REST API - Using MongoDB Atlas & mongoose with JWT Authentication",
 	"main": "server.js",
 	"scripts": {
 		"start": "node backend/server.js",
