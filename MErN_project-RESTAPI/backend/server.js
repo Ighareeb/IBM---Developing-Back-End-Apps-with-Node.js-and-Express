@@ -1,6 +1,7 @@
 const express = require('express'); //BE web framework
 const dotenv = require('dotenv').config();
 const errorHandler = require('./middleware/errorMiddleware');
+const authHandler = require('./middleware/authMiddleware');
 const connectDB = require('./config/db');
 const colors = require('colors'); // adds colors to Node.js console eg. change text/background cololr, apply themes, create custom styles
 
@@ -18,6 +19,7 @@ app.use('/api/goals', require('./routes/goalRoutes')); //goals endpoint
 app.use('/api/users', require('./routes/userRoutes')); //users endpoint
 
 app.use(errorHandler); //this now overwrites default express errorHandler
+// app.use(authHandler); //so we can use JWT for authentication
 
 app.listen(PORT, () => {
 	console.log(`Server started on port: ${PORT}`);
