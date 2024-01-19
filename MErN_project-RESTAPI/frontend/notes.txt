@@ -1,6 +1,0 @@
-#NOTES
-
-Will not be using the counter in this project - left as example
---> Create userSlice.js + goalSlice.js that have reducers we add to store.js
-
-For the App we need 3 pages in src folder - Login, Register, Dashboard (that you need to be logged in to access)
