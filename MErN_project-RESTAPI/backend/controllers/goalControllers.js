@@ -1,6 +1,6 @@
 const Goal = require('../models/goalsModels'); //represents goal collection in mongoosedb, has mongoose methods we can use to interact with our database
 
-const asyncHandler = require('express-async-handler'); //express doesn't handle async errors by default promise errors wouldn't be caught - wrap async route handlers with asyncHandler so it passes the error to our custom errorHandler middleware
+const asyncHandler = require('express-async-handler'); //express doesn't handle async errors by default promise errors wouldn't be caught - wrap async route handlers with asyncHandler so it passes the error to our custom errorHandler middleware since mongoose uses asynchronous methods
 
 //CRUD functions/logic that will be used in our goal routes:
 

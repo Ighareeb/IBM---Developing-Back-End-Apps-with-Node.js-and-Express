@@ -4,7 +4,7 @@ const router = express.Router(); //creates express built-in router object for mi
 const {
 	registerUser,
 	loginUser,
-	getUser,
+	// getUser,
 } = require('../controllers/userControllers.js');
 
 //set up user endpoint routes:
@@ -15,5 +15,7 @@ router.post('/', registerUser);
 //login user
 router.post('/login', loginUser);
 
-//get user information
-router.get('/profile', getUser);
+// //get user information
+// router.get('/profile', getUser);
+
+module.exports = router;
