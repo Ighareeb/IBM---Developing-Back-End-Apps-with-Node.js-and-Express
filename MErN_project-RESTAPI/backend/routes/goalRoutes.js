@@ -7,7 +7,7 @@ const {
 	deleteGoal,
 } = require('../controllers/goalControllers.js');
 
-//set up CRUD endpoint routes
+//set up CRUD endpoint routes:
 
 //get goals
 router.get('/', getGoals);

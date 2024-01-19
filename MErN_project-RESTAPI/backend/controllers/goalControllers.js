@@ -1,8 +1,8 @@
-const Goal = require('../models/goalsModels'); //has mongoose methods we can use to interact with our database
+const Goal = require('../models/goalsModels'); //represents goal collection in mongoosedb, has mongoose methods we can use to interact with our database
 
 const asyncHandler = require('express-async-handler'); //express doesn't handle async errors by default promise errors wouldn't be caught - wrap async route handlers with asyncHandler so it passes the error to our custom errorHandler middleware
 
-//CRUD functions/logic that will be used in our routes:
+//CRUD functions/logic that will be used in our goal routes:
 
 //GET /api/goals -->get goals
 const getGoals = asyncHandler(async (req, res) => {
@@ -19,7 +19,7 @@ const setGoal = asyncHandler(async (req, res) => {
 		res.status(400);
 		throw new Error('Please add a text field');
 	}
-	//send POST request with key === 'text' and set its value (this structure is based on how we created schema for goals )
+	//send POST request with key === 'text' and set its value (this structure is based on how we created schema for goal)
 	const goal = await Goal.create({
 		text: req.body.text,
 	});

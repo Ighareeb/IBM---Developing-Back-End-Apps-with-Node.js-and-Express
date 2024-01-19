@@ -14,7 +14,8 @@ app.use(express.json()); //Middleware that parses incoming req that have JSON pa
 
 app.use(express.urlencoded({ extended: false })); //Middleware that parses req that have urlencoded paylods (typically how browsers send form data set to POST) and result is req.body
 
-app.use('/api/goals', require('./routes/goalRoutes')); //main endpoint
+app.use('/api/goals', require('./routes/goalRoutes')); //goals endpoint
+app.use('/api/users', require('./routes/userRoutes')); //users endpoint
 
 app.use(errorHandler); //this now overwrites default express errorHandler
 
