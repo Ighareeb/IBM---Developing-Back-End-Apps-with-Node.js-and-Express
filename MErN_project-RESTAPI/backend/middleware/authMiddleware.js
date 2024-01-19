@@ -32,4 +32,4 @@ const authHandler = asyncHandler(async (req, res, next) => {
 	}
 });
 
-module.exports = authHandler; //import in server.js and also userRoutes.js
+module.exports = authHandler; //import in userRoutes.js + goalRoutes.js

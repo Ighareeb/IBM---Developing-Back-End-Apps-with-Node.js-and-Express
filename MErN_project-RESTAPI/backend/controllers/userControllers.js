@@ -73,7 +73,13 @@ const loginUser = asyncHandler(async (req, res) => {
 //GET /api/users/profile -->get user information
 //need to set up custom middleware to check token
 const getUser = asyncHandler(async (req, res) => {
-	res.json({ message: 'get user' });
+	const { _id, name, email } = await User.findById(req.user._id); //req.user is set up/sent in authMiddleware.js
+
+	res.status(200).json({
+		id: _id,
+		name,
+		email,
+	});
 });
 
 //generate JWT token - reusable function so we can add to both login and register. Uses JWT_SECRET from .env to sign token

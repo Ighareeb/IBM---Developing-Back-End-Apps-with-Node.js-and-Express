@@ -6,20 +6,21 @@ const {
 	updateGoal,
 	deleteGoal,
 } = require('../controllers/goalControllers.js');
+const authHandler = require('../middleware/authMiddleware.js');
 
 //set up CRUD endpoint routes:
 
 //get goals
-router.get('/', getGoals);
+router.get('/', authHandler, getGoals);
 
 //create goal
-router.post('/', setGoal);
+router.post('/', authHandler, setGoal);
 
 //update goal
-router.put('/:id', updateGoal);
+router.put('/:id', authHandler, updateGoal);
 
 //delete goal
-router.delete('/:id', deleteGoal);
+router.delete('/:id', authHandler, deleteGoal);
 
 //can be shortened/combined/refactored because of similar routes being used:
 //router.route('/').get(getGoals).post(setGoal);
