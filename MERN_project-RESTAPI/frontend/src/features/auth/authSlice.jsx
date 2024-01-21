@@ -31,6 +31,11 @@ export const register = createAsyncThunk(
 	},
 );
 
+//(Logout User)
+export const logout = createAsyncThunk('auth/logout', async () => {
+	await authService.logout();
+});
+
 //reducers here are normal functions - extraReducers are thunk or async functions
 export const authSlice = createSlice({
 	name: 'auth',
