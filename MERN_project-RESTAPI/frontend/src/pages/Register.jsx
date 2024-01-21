@@ -49,7 +49,7 @@ export default function Register() {
 							type="email"
 							value={email}
 							name="email"
-							id="name"
+							id="email"
 							className="form-control"
 							placeholder="Enter your email"
 							onChange={handleChange}
@@ -63,6 +63,7 @@ export default function Register() {
 							id="password"
 							className="form-control"
 							placeholder="Enter your password"
+							onChange={handleChange}
 						/>
 					</div>
 					<div className="form-group">
@@ -73,6 +74,7 @@ export default function Register() {
 							id="password2"
 							className="form-control"
 							placeholder="Confirm your password"
+							onChange={handleChange}
 						/>
 					</div>
 					<div className="form-group">

@@ -8,7 +8,7 @@ function App() {
 	return (
 		<>
 			<Router>
-				<div class="container">
+				<div className="container">
 					<Header />
 					<Routes>
 						<Route path="/" element={<Dashboard />} />
