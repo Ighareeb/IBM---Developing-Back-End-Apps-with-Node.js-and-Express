@@ -1,6 +1,6 @@
 import axios from 'axios'; //for HTTP req --> POSTMAN for server side / axios for client side
 
-const API_URL = '/api/users/';
+const API_URL = '/api/users/'; //prefix for url is kept in package.json proxy property
 
 //register user function
 const register = async (userData) => {
