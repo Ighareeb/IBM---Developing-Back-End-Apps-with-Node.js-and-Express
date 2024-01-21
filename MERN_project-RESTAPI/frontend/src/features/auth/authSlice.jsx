@@ -1,5 +1,4 @@
 //we are not really using Users as a resource in the same way as we are goals where we need CRUD functionality - just for login/out and register
-import React, { useState } from 'react';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 //createAsyncThunk - simplifies the process of dispatching actions as the result of asynchronous operations, such as API calls; and updates the Redux state accordingly (eg. from the server data)
 

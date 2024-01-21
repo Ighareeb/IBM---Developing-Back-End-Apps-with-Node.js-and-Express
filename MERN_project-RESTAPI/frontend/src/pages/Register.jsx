@@ -1,19 +1,40 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
-import { useSelector, useDispatch } from 'react-redux'; //useSelector === select something from state set in authReducer (from authSlice.js file --> store.js); useDispatch === dispatch an function/action (reset, thunk actions/reducers in authSlice.js) to the store
+import { useSelector, useDispatch } from 'react-redux'; //useSelector === select something from state set in authReducer (from store.js--> authSlice.js file ); useDispatch === dispatch an function/action (reset, thunk actions/reducers in authSlice.js) to the store
 import { useNavigate } from 'react-router-dom'; //for redirecting
 import { toast } from 'react-toastify'; //for toast notifications - need to update App.js for this to work
+import { register, reset } from '../features/auth/authSlice'; //import register and reset functions from authSlice.js file
+import Spinner from '../components/Spinner'; //import Spinner component for isLoading
 
 export default function Register() {
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
 		password: '',
-		password2: '', //confirm password
+		password2: '',
 	});
 
 	const { name, email, password, password2 } = formData;
+
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const { user, isLoading, isError, isSuccess, message } = useSelector(
+		(state) => state.auth,
+	);
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(message);
+		}
+
+		if (isSuccess || user) {
+			navigate('/');
+		}
+
+		dispatch(reset());
+	}, [user, isError, isSuccess, message, navigate, dispatch]);
 
 	const handleChange = (e) => {
 		setFormData((prev) => ({
@@ -23,7 +44,25 @@ export default function Register() {
 	};
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		//dispatch register
+		if (password !== password2) {
+			toast.error('Passwords do not match');
+		} else {
+			const userData = {
+				name,
+				email,
+				password,
+			};
+			dispatch(register(userData)); //dispatch register thunk function action
+		}
 	};
+
+	//if isLoading is true, show spinner
+	if (isLoading) {
+		return <Spinner />;
+	}
+
 	return (
 		<>
 			<section className="heading">
