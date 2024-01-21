@@ -17,8 +17,7 @@ const initialState = {
 };
 //(Register user) - async thunk function to handle registration (BE) - 2 params - user object and thunkAPI
 export const register = createAsyncThunk(
-	'auth/register', //prefix for generated action types
-
+	'auth/register', //prefix for generated action types (pending, fulfilled, rejected) --> dealt with in 'extraReducers since async
 	//async function gets passed user object when dispatching register action from register page.
 	async (user, thunkAPI) => {
 		try {
@@ -45,7 +44,23 @@ export const authSlice = createSlice({
 			state.message = '';
 		},
 	},
-	extraReducers: () => {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(register.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(register.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.user = action.payload; //payload is user object
+			})
+			.addCase(register.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload; //for thunkAPI.rejectWithValue(message) in register async thunk function catch{}
+				state.user = null;
+			});
+	},
 });
 //when you create a slice automatically generates action creators FOR EACH reducer function you provide, and these are available under the actions property of the slice.
 

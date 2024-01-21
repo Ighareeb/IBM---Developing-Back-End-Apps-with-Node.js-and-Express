@@ -1,6 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux'; //useSelector === select something from state set in authReducer (from authSlice.js file --> store.js); useDispatch === dispatch an function/action (reset, thunk actions/reducers in authSlice.js) to the store
+import { useNavigate } from 'react-router-dom'; //for redirecting
+import { toast } from 'react-toastify'; //for toast notifications - need to update App.js for this to work
 
 export default function Register() {
 	const [formData, setFormData] = useState({
