@@ -28,11 +28,29 @@ export const createGoal = createAsyncThunk(
 	},
 );
 
+//we still need the thunkAPI obj to get token and access user obj for protected routes but we are not passing anything in so use use _ as first argument
+export const getGoals = createAsyncThunk(
+	'goals/getAll',
+	async (_, thunkAPI) => {
+		try {
+			return await goalService.getGoals(thunkAPI.getState().auth.user.token);
+		} catch (err) {
+			const message =
+				(err.response && err.response.data && err.response.data.message) ||
+				err.message ||
+				err.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 export const goalSlice = createSlice({
 	name: 'goal',
 	initialState,
-	reducer: {
-		reset: (state) => initialState, //reset clears goal array, unlike with user reset where we want to persist so we don't include user: value from the state object
+	reducers: {
+		reset: (state) => {
+			Object.assign(state, initialState);
+		}, //reset clears goal array, unlike with user reset where we want to persist so we don't include user: value from the state object
 	},
 	extraReducers: (builder) => {
 		builder
@@ -45,6 +63,19 @@ export const goalSlice = createSlice({
 				state.goals.push(action.payload); //since goals is an array - redux allows us to just push onto state.
 			})
 			.addCase(createGoal.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getGoals.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getGoals.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.goals = action.payload;
+			})
+			.addCase(getGoals.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
