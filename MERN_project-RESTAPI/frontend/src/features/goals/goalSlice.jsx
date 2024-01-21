@@ -34,6 +34,22 @@ export const goalSlice = createSlice({
 	reducer: {
 		reset: (state) => initialState, //reset clears goal array, unlike with user reset where we want to persist so we don't include user: value from the state object
 	},
+	extraReducers: (builder) => {
+		builder
+			.addCase(createGoal.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(createGoal.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.goals.push(action.payload); //since goals is an array - redux allows us to just push onto state.
+			})
+			.addCase(createGoal.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			});
+	},
 });
 
 export const { reset } = goalSlice.actions;

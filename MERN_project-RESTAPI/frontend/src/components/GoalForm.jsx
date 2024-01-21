@@ -11,7 +11,7 @@ export default function GoalForm() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		dispatch(createGoal({ text }));
-		setText = '';
+		setText('');
 	};
 	return (
 		<section className="form">
