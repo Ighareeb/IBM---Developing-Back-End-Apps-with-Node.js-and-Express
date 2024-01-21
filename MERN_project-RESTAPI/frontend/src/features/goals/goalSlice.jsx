@@ -9,6 +9,21 @@ const initialState = {
 	message: '',
 };
 
+export const createGoal = createAsyncThunk(
+	'goals/create',
+	async (goalData, thunkAPI) => {
+		try {
+			return await goalService.create(goalData);
+		} catch (err) {
+			const message =
+				(err.response & err.response.data && err.response.data.message) ||
+				err.message ||
+				err.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 export const goalSlice = createSlice({
 	name: 'goal',
 	initialState,
