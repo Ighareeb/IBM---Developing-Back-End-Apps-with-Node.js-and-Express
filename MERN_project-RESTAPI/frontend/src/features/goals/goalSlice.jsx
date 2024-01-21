@@ -13,7 +13,11 @@ export const createGoal = createAsyncThunk(
 	'goals/create',
 	async (goalData, thunkAPI) => {
 		try {
-			return await goalService.create(goalData);
+			//thunkAPI obj has getState() method that returns current state where we have the user object and can get token to use when accessing protected routes
+			return await goalService.createGoal(
+				goalData,
+				thunkAPI.getState().auth.user.token,
+			);
 		} catch (err) {
 			const message =
 				(err.response & err.response.data && err.response.data.message) ||
