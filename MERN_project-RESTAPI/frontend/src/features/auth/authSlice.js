@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 //createAsyncThunk - simplifies the process of dispatching actions as the result of asynchronous operations, such as API calls; and updates the Redux state accordingly (eg. from the server data)
 
+import authService from './authService'; //function with axios HTTP req handling logic
+
 //when user logins in we get a JWT token back from the server - we need to store this token in the browser (local storage) so that we can send it back to the server with each request to authenticate the user
 const user = JSON.parse(localStorage.getItem('user')); //check inital state user ternary
 
@@ -13,6 +15,23 @@ const initialState = {
 	isLoading: false,
 	message: '',
 };
+//(Register user) - async thunk function to handle registration (BE) - 2 params - user object and thunkAPI
+export const register = createAsyncThunk(
+	'auth/register', //prefix for generated action types
+
+	//async function gets passed user object when dispatching register action from register page.
+	async (user, thunkAPI) => {
+		try {
+			return await authService.register(user); //check authService.js where handling of HTTP req logic is written - making req and sending data + setting data in localStorage
+		} catch (err) {
+			const message =
+				(err.response && err.response.data && err.response.data.message) ||
+				err.message ||
+				err.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
 
 //reducers here are normal functions - extraReducers are thunk or async functions
 export const authSlice = createSlice({
