@@ -80,6 +80,7 @@ const getUser = asyncHandler(async (req, res) => {
 		name,
 		email,
 	});
+	//res.status(200).json(req.user); //req.user is set up/sent in authMiddleware.js so actually the code for getUser above is repetitive/redundant
 });
 
 //generate JWT token - reusable function so we can add to both login and register. Uses JWT_SECRET from .env to sign token
