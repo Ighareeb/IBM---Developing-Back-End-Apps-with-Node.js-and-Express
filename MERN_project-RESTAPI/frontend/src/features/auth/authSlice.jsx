@@ -31,6 +31,18 @@ export const register = createAsyncThunk(
 	},
 );
 
+//(Login User) - async thunk function to handle login (BE) - 2 params - user object and thunkAPI
+export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
+	try {
+		return await authService.login(user);
+	} catch (err) {
+		const message =
+			(err.response && err.response.data && err.response.data.message) ||
+			err.message ||
+			err.toString();
+		return thunkAPI.rejectWithValue(message);
+	}
+});
 //(Logout User)
 export const logout = createAsyncThunk('auth/logout', async () => {
 	await authService.logout();
