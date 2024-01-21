@@ -23,7 +23,7 @@ export default function Login() {
 		<>
 			<section className="heading">
 				<h1>
-					<FaSignInAlt /> Login now
+					<FaSignInAlt /> Login
 				</h1>
 				<p>Login to start setting goals</p>
 			</section>
