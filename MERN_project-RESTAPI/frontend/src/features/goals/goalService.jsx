@@ -26,5 +26,18 @@ const getGoals = async (token) => {
 	return res.data;
 };
 
-const goalService = { createGoal, getGoals };
+const deleteGoal = async (goalId, token) => {
+	const config = {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	};
+	await axios.delete(API_URL + goalId, config);
+	return goalId;
+	//could do it this way but make sure to change fulfilled case in extraReducers to action.payload.id in goalSlice
+	// const res = await axios.delete(API_URL + goalId, config);
+	// return res.data;
+};
+
+const goalService = { createGoal, getGoals, deleteGoal };
 export default goalService;

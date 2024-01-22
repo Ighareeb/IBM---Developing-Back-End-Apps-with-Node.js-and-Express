@@ -16,7 +16,7 @@ export const createGoal = createAsyncThunk(
 			//thunkAPI obj has getState() method that returns current state where we have the user object and can get token to use when accessing protected routes
 			return await goalService.createGoal(
 				goalData,
-				thunkAPI.getState().auth.user.token,
+				thunkAPI.getState().auth.user.token, //auth user token
 			);
 		} catch (err) {
 			const message =
@@ -33,7 +33,25 @@ export const getGoals = createAsyncThunk(
 	'goals/getAll',
 	async (_, thunkAPI) => {
 		try {
-			return await goalService.getGoals(thunkAPI.getState().auth.user.token);
+			return await goalService.getGoals(thunkAPI.getState().auth.user.token); //auth user token
+		} catch (err) {
+			const message =
+				(err.response && err.response.data && err.response.data.message) ||
+				err.message ||
+				err.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
+export const deleteGoal = createAsyncThunk(
+	'goals/delete',
+	async (goalId, thunkAPI) => {
+		try {
+			return await goalService.deleteGoal(
+				goalId,
+				thunkAPI.getState().auth.user.token, //auth user token
+			);
 		} catch (err) {
 			const message =
 				(err.response && err.response.data && err.response.data.message) ||
@@ -76,6 +94,19 @@ export const goalSlice = createSlice({
 				state.goals = action.payload;
 			})
 			.addCase(getGoals.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(deleteGoal.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteGoal.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.goals = state.goals.filter((goal) => goal._id !== action.payload);
+			})
+			.addCase(deleteGoal.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
