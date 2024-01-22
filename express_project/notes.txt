@@ -22,3 +22,11 @@ returns 201 status if req successful and new resource was created.
 *need to use middleware to parse JSON data from req.body so express can use data - middleware function should be called/invoked before the req is made
 *middleware functions have access to req +  res objects and (if) there is the next middleware function in the apps req,res cycle
 --> for middleware app.use()
+
+PUT, PATCH req:
+used to update existing resources
+-PATCH - partial update
+-PUT - replace entire resource --> so you need to include all fields in req.body, even parts that aren't being updated since the PUT request is overwriting the resource (or they will be null)
+
+DELETE req:
+used to delete resources

@@ -55,16 +55,63 @@ app.post('/api/users', (req, res) => {
 app.get('/api/users/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 	if (isNaN(id)) {
-		res.status(404).send({ msg: 'Bad request, Invalid ID' });
+		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
 	}
-	const user = users.find((user) => user.id === parseInt(id));
+	const user = users.find((user) => user.id === id);
 	if (user) {
-		res.status(200).send({ user: user.username, id: id });
+		return res.status(200).send({ username: user.username, id: id });
 	} else {
-		res.status(404).send({ msg: 'User not found' });
+		return res.status(404).send({ msg: 'User not found' });
 	}
 });
 
+//PUT update user based on id route param
+app.put('/api/users/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+	const { body } = req;
+	if (isNaN(id)) {
+		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
+	}
+	const userIndex = users.findIndex((user) => user.id === id);
+	if (userIndex !== -1 && body) {
+		const updatedUser = { id: id, ...body };
+		users[userIndex] = updatedUser; //updates user in the users array
+		return res.status(200).send(updatedUser);
+	}
+	return res.status(404).send({ msg: 'User not found' });
+});
+
+//PATCH (partial) update user based on id route param
+app.patch('/api/users/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+	const { body } = req;
+	if (isNaN(id)) {
+		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
+	}
+	const userIndex = users.findIndex((user) => user.id === id);
+	if (userIndex === -1) {
+		return res.status(404).send({ msg: 'User not found' });
+	}
+	const updatedUser = { ...users[userIndex], ...body }; //only overwrites props/fields in req.body that are present in user
+	users[userIndex] = updatedUser; //updates user in the users array
+	return res.status(200).send(updatedUser);
+});
+
+//DELETE user based on id route param
+app.delete('/api/users/:id', (req, res) => {
+	const id = parseInt(req.params.id);
+	if (isNaN(id)) {
+		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
+	}
+	const userIndex = users.findIndex((user) => user.id === id);
+	if (userIndex === -1) {
+		return res.status(404).send({ msg: 'User not found' });
+	}
+	const deletedUser = users.splice(userIndex, 1);
+	return res.status(200).send(deletedUser);
+});
+
+//GET all products
 app.get('/api/products', (req, res) => {
 	res.status(200).send({ msg: 'Products' });
 });
