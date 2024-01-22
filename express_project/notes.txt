@@ -9,3 +9,14 @@ code on client side makes req to express server side application.
 server side application runs logic and will send back a response to client side application.
 
 In package.json - changing type to "modules" - remember to add .mjs to files so you can use ES6 modules and syntax for import/export
+
+query params:
+1. can be used on client side to send data across different pages (eg. passing state)
+2. send from client side to server side to add additional data to req that usually isn't added to HTTP req body (eg. when using GET request you could filter or sort server response) 
+* should not be used to send sensitive data (eg. passwords) - use req body instead
+
+POST req:
+data sent from client to server is sent as req.body/payload
+server then does things like validation and parsing before applying logic/sending to db/file storage etc.
+returns 201 status if req successful and new resource was created.
+*need to use middleware to parse JSON data from req.body so express can use data
