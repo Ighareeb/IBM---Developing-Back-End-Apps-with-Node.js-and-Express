@@ -2,6 +2,8 @@ import express from 'express';
 
 const app = express();
 
+app.use(express.json()); //built in express middleware that parses JSON data from req.body
+
 //GET req with route, req/res objects passed in handler function
 app.get('/', (req, res) => {
 	res.status(200).send({ msg: 'Homepage' });
@@ -21,7 +23,7 @@ const users = [
 		username: 'SJ',
 	},
 ];
-
+//GET all users + if query params will filter
 app.get('/api/users', (req, res) => {
 	// console.log(req.query);
 	const {
@@ -40,10 +42,15 @@ app.get('/api/users', (req, res) => {
 	}
 	return res.status(200).send(users);
 });
-
+//POST create new user
 app.post('/api/users', (req, res) => {
-	res.status(200).send({ msg: 'User created' });
+	const { body } = req;
+	const newUser = { id: users.length + 1, ...body };
+	users.push(newUser);
+	res.status(201).send(newUser);
 });
+
+//GET single user using id
 //route params are always treated as strings so for id we need to convert to number parseInt()/Number()
 app.get('/api/users/:id', (req, res) => {
 	const id = parseInt(req.params.id);

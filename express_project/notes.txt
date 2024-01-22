@@ -19,4 +19,6 @@ POST req:
 data sent from client to server is sent as req.body/payload
 server then does things like validation and parsing before applying logic/sending to db/file storage etc.
 returns 201 status if req successful and new resource was created.
-*need to use middleware to parse JSON data from req.body so express can use data
+*need to use middleware to parse JSON data from req.body so express can use data - middleware function should be called/invoked before the req is made
+*middleware functions have access to req +  res objects and (if) there is the next middleware function in the apps req,res cycle
+--> for middleware app.use()
