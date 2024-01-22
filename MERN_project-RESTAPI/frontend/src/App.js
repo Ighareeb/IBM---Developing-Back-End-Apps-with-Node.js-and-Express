@@ -31,3 +31,9 @@ export default App;
 // --> Create userSlice.js + goalSlice.js that have reducers we add to store.js
 
 // For the App we need 3 pages in src folder - Login, Register, Dashboard (that you need to be logged in to access)
+
+//thunk returns a function in a promise and I create reducers in my slice to handle the state of the promise
+//in my components I would initialize useDispatch and dispatch the thunk function/actions to thje Redux store which will run asynchoronously
+
+//useSelector hook allows extraction of data from Redux store state (takes entire redux store state as arg obj) and return part of state you want to use.
+//in store we are getting state imported from our authSlice for users and goalSlice for goals

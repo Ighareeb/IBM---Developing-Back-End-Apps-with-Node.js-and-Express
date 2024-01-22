@@ -3,7 +3,7 @@ import authReducer from '../features/auth/authSlice'; //brings the authSlice.red
 import goalReducer from '../features/goals/goalSlice'; //brings the goalSlice.reducer since it is default export
 
 export const store = configureStore({
-	reducer: { auth: authReducer, goal: goalReducer },
+	reducer: { auth: authReducer, goals: goalReducer },
 });
 
 //imported in index.js - we add reducer from {<fileName>slice.js} and add it to store
