@@ -57,3 +57,28 @@ app.use((req, res, next) => {
     next();
   }
 });
+---------------------------
+Express Validator middleware: 
+https://express-validator.github.io/docs/
+*-->This is server-side validation which is MUCH MORE IMP and necessary - compared to client-side validation (which can be bypassed)
+--> so always implement server-side validation
+use them like middleware in routes before the req,res handler logic
+-->functions you can import (destructured) from express-validator = body, header, param, query, cookie,
+-->*check (check is the mainAPI used for validating and sanitizing HTTP req and gives you access to all build in validators and sanitizers and utility functions/methods)
+*for body() validator if the arg is passed as an array it will check all fields in the body of the req [body('key1').methods, body('key2').methods]
+You would then be able to create validation chains by chaining methods to these functions
+eg. The query function validator specifically is used to create a validation chain for query parameters, you chain on validation methods depending on how you want to validate the query parameter
+app.get('/users', <validator middleware>, (req,res)=> {route logic})
+
+*note: validators do not report/throw validation errors to users/client automatically (it will validate but will not throw an error) - you need to handle the error 
+
+you can create 'unlimited' validation chain to keep calling more methods of validation on the same (eg. query('queryparam'))
+
+you can use if (result.isEmpty()){} to check if there were any validation errors (returns bool)
+you can use matchedData(req) to get the data that was validated when passing it to res logic
+
+
+
+
+
+

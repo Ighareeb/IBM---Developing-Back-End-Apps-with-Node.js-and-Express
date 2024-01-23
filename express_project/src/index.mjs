@@ -1,4 +1,5 @@
 import express from 'express';
+import { query, validationResult, body, matchedData } from 'express-validator';
 
 const app = express();
 
@@ -55,32 +56,63 @@ const users = [
 		username: 'SJ',
 	},
 ];
-//GET all users + if query params will filter
-app.get('/api/users', (req, res) => {
-	// console.log(req.query);
-	const {
-		query: { key, value },
-	} = req; //destructuring query object from req object + filter key & value from query object
+//GET all users + if query params will filter + query param express-validator
+app.get(
+	'/api/users',
+	query('key')
+		.isIn(['username'])
+		.notEmpty()
+		.withMessage('Key query must not be empty') //Sets the error message for the previous validator.
+		.isLength({ min: 3, max: 15 })
+		.withMessage('Username must be between 3 and 15 characters'), //chainging validation methods
+	(req, res) => {
+		console.log(req); //check validation object
+		const result = validationResult(req); // extracts validation errors from validation obj (so you don't need to do it manually)
+		console.log(result); //returns in easily readable format ready to be used as required in res
+		// console.log(req.query);
+		const {
+			query: { key, value },
+		} = req; //destructuring query object from req object + filter key & value from query object
 
-	if (key && value) {
-		return res
-			.status(200)
-			.send(
-				users.filter((user) =>
-					String(user[key]).toLowerCase().includes(String(value).toLowerCase()),
-				),
-			); //filter users based on key and value - returns filtered array
-		//eg. http://localhost:3000/api/users?key=username&value=IG
-	}
-	return res.status(200).send(users);
-});
-//POST create new user
-app.post('/api/users', (req, res) => {
-	const { body } = req;
-	const newUser = { id: users.length + 1, ...body };
-	users.push(newUser);
-	res.status(201).send(newUser);
-});
+		if (key && value) {
+			return res
+				.status(200)
+				.send(
+					users.filter((user) =>
+						String(user[key])
+							.toLowerCase()
+							.includes(String(value).toLowerCase()),
+					),
+				); //filter users based on key and value - returns filtered array
+			//eg. http://localhost:3000/api/users?key=username&value=IG
+		}
+		return res.status(200).send(users);
+	},
+);
+//POST create new user + body express-validator + isEmpty() & matchedData()
+app.post(
+	'/api/users',
+	body('username')
+		.notEmpty()
+		.withMessage('Username required')
+		.isLength({ min: 5, max: 32 })
+		.withMessage('Username must be between 5 and 32 characters')
+		.isString()
+		.withMessage('Username must be a string'),
+	(req, res) => {
+		const result = validationResult(req);
+		console.log(result);
+		if (!result.isEmpty()) {
+			return res.status(400).send({ errors: result.array() }); //returns array of validation errors - can be mapped and display specific errors/info to user in response
+		}
+		// const { body } = req;
+		// const newUser = { id: users.length + 1, ...body };
+		const validData = matchedData(req); //returns only validated data from req
+		const newUser = { id: users.length + 1, ...validData };
+		users.push(newUser);
+		res.status(201).send(newUser);
+	},
+);
 
 //GET single user using id
 //route params are always treated as strings so for id we need to convert to number parseInt()/Number()
