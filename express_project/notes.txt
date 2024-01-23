@@ -20,8 +20,7 @@ data sent from client to server is sent as req.body/payload
 server then does things like validation and parsing before applying logic/sending to db/file storage etc.
 returns 201 status if req successful and new resource was created.
 *need to use middleware to parse JSON data from req.body so express can use data - middleware function should be called/invoked before the req is made
-*middleware functions have access to req +  res objects and (if) there is the next middleware function in the apps req,res cycle
---> for middleware app.use()
+
 
 PUT, PATCH req:
 used to update existing resources
@@ -30,3 +29,31 @@ used to update existing resources
 
 DELETE req:
 used to delete resources
+-------------------------
+MIDDLEWARE - 
+const <middleware> = (req, res, next) => {
+	HANDLE req, res? logic,
+	next() 
+	//pass control to next middleware function in req,res cycle
+	//next() is optional - if you don't call it, the req,res cycle will end and the client will never get a response
+	-you can have as many middleware called in sequential order using next()
+}
+app.use(<middleware>, <middleware-2>, etc) ---> global
+----
+add to route for specific routes:
+
+app.get('/users', <middleware-1>,<middleware-2>, etc, (req,res)=> {route logic})
+----
+middleware is a function that runs between req and res cycle. It MUST be defined and app.use() it before the route handler (or inside the route handler before the route logic/req,res handler logic)
+<handling req & res> middleware functions have access to req + res objects and (if) there is the next middleware function in the apps req,res cycle
+Middleware functions can be enabled globally (all routes) or used for specific routes/endpoints (pass as argument in that specific route/reused on multiple routes)
+
+*optionally pass an error to next. If you pass anything to the next function, Express will interpret this as an error and will skip all remaining middleware in the stack (except for error-handling middleware).
+
+app.use((req, res, next) => {
+  if (someCondition) {
+    next(new Error('Something went wrong'));
+  } else {
+    next();
+  }
+});

@@ -2,8 +2,40 @@ import express from 'express';
 
 const app = express();
 
+//MIDDLEWARE
 app.use(express.json()); //built in express middleware that parses JSON data from req.body
 
+const loggingMiddleware = (req, res, next) => {
+	console.log(`Request Method: ${req.method}, Request URL: ${req.url}`);
+	next();
+};
+app.use(loggingMiddleware); //calling middleware globally like this means it will be called for all routes
+
+// //custom middleware that can be added to the routes to refactor and reduce DRY code
+// const handleUserById = (req, res, next)=> {
+// 	const id = parseInt(req.params.id);
+// 	const {body} = req;
+// 	if (inNaN(id)) {
+// 		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
+// 	}
+// 	const userIndex = users.findIndex((user)=>{user.id === id});
+// // need to pass the userIndex to the next middleware or in this case the route req,res handler
+//  req.userIndex = userIndex;
+
+//note still need to destructure req.body in req, res handler to use body data
+// }
+// //  REFACTORED EXAMPLE using middleware
+// app.put('/api/users/:id', handleUserById, (req, res) => {
+// 	const { body, (userIndex) } = req; --> could destructure userIndex as it is passed from middleware
+// 	if (!body) {
+// 		return res.status(400).send({ msg: 'Bad request, body required' });
+// 	}
+// 	const updatedUser = { id: users[req.userIndex].id, ...body };
+// 	users[req.userIndex] = updatedUser; //updates user in the users array
+// 	return res.status(200).send(updatedUser);
+// });
+
+//------------------------------------------------------------------------------------------
 //GET req with route, req/res objects passed in handler function
 app.get('/', (req, res) => {
 	res.status(200).send({ msg: 'Homepage' });
