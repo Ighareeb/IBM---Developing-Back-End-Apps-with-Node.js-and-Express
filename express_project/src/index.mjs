@@ -1,6 +1,12 @@
 import express from 'express';
-import { query, validationResult, body, matchedData } from 'express-validator';
-
+import {
+	query,
+	validationResult,
+	body,
+	matchedData,
+	checkSchema,
+} from 'express-validator';
+// import {validationSchema} from './utils/validationSchemas.mjs';
 const app = express();
 
 //MIDDLEWARE
