@@ -90,3 +90,40 @@ group API endpoints together as a domain - define route for each domain with rou
 
 //good practice is to have folders for each domain routes and then import all into a collective <routes> index folder that you can export to your express app.use(<routes>)
 
+------------------------------------------------
+HTTP Cookies: https://en.wikipedia.org/wiki/HTTP_cookie
+https://expressjs.com/en/resources/middleware/cookie-parser.html
+- small pieces of data web server sends to client web browser
+- the browser can store the cookies and send them back to the server in future requests
+--> this is relevant since HTTP is stateless (no memory of previous req) so cookies enable web servers to store stateful info on client device and respond with dynamic contextual data based on client for activities such as tracking activity, logging, saving form fields, password management, personalization, etc
+eg. Authentication cookies commonly used by web servers to authenticate that a user is logged in and on which account. Otherwise they would need to authenticate on every req.
+eg. Tracking cookies (especially 3rd party tracking cookies) used to compile records of client browsing history.
+TYPES - 
+1. session/in-memory/transient/non-persistent cookies - expire or deleted when user closes browser; exist only in temporary memory while a user is on a web page. (identified by browser from absencse of expirationn date or max-age attribute assigned to them)
+2. persistent cookies - cookies that last for a long/specific time set by cookie creator and are stored on the client device
+--> can be used for keeping users logged into accounts on websites; BUT also tracking
+--> info transmitted to server every time client visits website cookie belongs to (or views resource connected to that website on another website eg. advertisement)
+3. secure cookies - only sent over an encrypted connection (https) - made secure by adding 'Secure' flag in options - less likely to be exposed to eavesdropping cookie theft
+4.HTTP-only cookies - cannot be accessed by client side APIs (eg. JS). This restriction helps mitigate cross-site scripting (XSS) attacks BUT still vulnerable to cross-site tracing (XST) and cross-site request forgery (CSRF) <has 'HttpOnly' flag> in options
+5. Same-site cookies - cookies that are only sent in requests initiated from the same origin as the target domain. This restriction mitigates CSRF attacks by preventing the browser from sending the cookie along with cross-site requests. <has 'SameSite' flag> in options
+
+
+let cookieParser = require('cookie-parser')
+app.use(cookieParser(<'secret'>)); 
+
+optional secret string used to sign cookies to prevent tampering. If you don't want to sign cookies, you can use cookieParser without any arguments:
+
+res.cookie('<cookieName>', '<cookieValue>', OPTIONAL<options>)
+console.log(req.headers.cookie) --> to see all cookies sent by client
+console.log(req.cookies) --> see parsed cookie i.e. in object format
+if (req.cookies.<cookieName> && req.cookies.<cookieName> === '<cookieValue>')
+{
+	return -->do something
+}
+return res.send({msg: 'You need the correct cookie to access this resource./ you need to log in})
+where options is an object eg. { signed: true, expires: new Date(Date.now() + 900000), httpOnly: true }
+
+if cookie is signed & options{ signed: true }, you can use 
+(req.signedCookies <cookieName>) 
+to access the parsed cookies, otherwise use req.cookies
+------------------------------------------------
