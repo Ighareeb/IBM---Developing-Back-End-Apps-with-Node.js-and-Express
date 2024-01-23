@@ -1,4 +1,6 @@
 import express from 'express';
+import users from './utils/userData.mjs';
+// import usersRouter from './routes/users.mjs';
 import {
 	query,
 	validationResult,
@@ -6,8 +8,12 @@ import {
 	matchedData,
 	checkSchema,
 } from 'express-validator';
+// import { handleUserById } from './utils/middleware.mjs';
 // import {validationSchema} from './utils/validationSchemas.mjs';
+
 const app = express();
+
+//app.use(usersRouter); //using imported router can replace code for whatever is defined in routes/users.mjs for API endpoints grouped as domains
 
 //MIDDLEWARE
 app.use(express.json()); //built in express middleware that parses JSON data from req.body
@@ -18,50 +24,11 @@ const loggingMiddleware = (req, res, next) => {
 };
 app.use(loggingMiddleware); //calling middleware globally like this means it will be called for all routes
 
-// //custom middleware that can be added to the routes to refactor and reduce DRY code
-// const handleUserById = (req, res, next)=> {
-// 	const id = parseInt(req.params.id);
-// 	const {body} = req;
-// 	if (inNaN(id)) {
-// 		return res.status(400).send({ msg: 'Bad request, Invalid ID' });
-// 	}
-// 	const userIndex = users.findIndex((user)=>{user.id === id});
-// // need to pass the userIndex to the next middleware or in this case the route req,res handler
-//  req.userIndex = userIndex;
-
-//note still need to destructure req.body in req, res handler to use body data
-// }
-// //  REFACTORED EXAMPLE using middleware
-// app.put('/api/users/:id', handleUserById, (req, res) => {
-// 	const { body, (userIndex) } = req; --> could destructure userIndex as it is passed from middleware
-// 	if (!body) {
-// 		return res.status(400).send({ msg: 'Bad request, body required' });
-// 	}
-// 	const updatedUser = { id: users[req.userIndex].id, ...body };
-// 	users[req.userIndex] = updatedUser; //updates user in the users array
-// 	return res.status(200).send(updatedUser);
-// });
-
-//------------------------------------------------------------------------------------------
 //GET req with route, req/res objects passed in handler function
 app.get('/', (req, res) => {
 	res.status(200).send({ msg: 'Homepage' });
 });
 
-const users = [
-	{
-		id: 1,
-		username: 'IG',
-	},
-	{
-		id: 2,
-		username: 'TG',
-	},
-	{
-		id: 3,
-		username: 'SJ',
-	},
-];
 //GET all users + if query params will filter + query param express-validator
 app.get(
 	'/api/users',

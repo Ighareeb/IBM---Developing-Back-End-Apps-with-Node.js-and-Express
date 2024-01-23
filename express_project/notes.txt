@@ -80,7 +80,13 @@ you can use matchedData(req) to get the data that was validated when passing it 
 **Scehma validation:
 -obj that has all validators defined so you reduce DRY code in routes
 -use checkSchema(schemaObj) inside route
+------------------------------------------------
+Express Router:
+https://expressjs.com/en/guide/routing.html
+Use express.Router() class to create router instance (which is a complete middleware and routing system)
+same as app.use for middleware and app.METHOD for defining routes
+group API endpoints together as a domain - define route for each domain with router.METHOD then app.use('/<routename>', router) for that domain
+(mini-app inside express) 1 - register req on router --> 2. register router on express
 
-
-
+//good practice is to have folders for each domain routes and then import all into a collective <routes> index folder that you can export to your express app.use(<routes>)
 
