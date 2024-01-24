@@ -231,10 +231,21 @@ passport.deserializeUser(function(id, done) {
     });            └──────────────→ user object attaches to the request as req.user   
 });
 --> so the deserializeUser function uses the id from the session and looks up the user in the database and attaches it to the request as req.user so that you can use it in your request handlers.
-
-
-
-
-
-
 ------------------------------------------------
+mongoose  
+-schema = defines database collection structure.
+After creating schema, you need to compile/create a model based on that schema.
+Model is what is used to perform operations on data in the db
+*note- db automatically generates _id
+
+const schema = new mongoose.Schema({
+	key: {structure of data},
+})
+
+const model = mongoose.model('collectionName', schema)
+------------------------------------------------
+
+
+
+
+

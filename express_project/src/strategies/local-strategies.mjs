@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
-import users from '../models/users.mjs';
+import users from '../utils/userData.mjs';
 
 //done(err, ?user, ?info) provided by passport.js
 //serializing user by id in this case so req.session with have passport: {user: user.id} (you could serialize with anything you want, id is unique identifier so a better choice + data that isn't sensitive to session/going to change like a username + don't store unnecessary props in session data)

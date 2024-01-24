@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import users from './utils/userData.mjs';
-import { query, validationResult, checkSchema } from 'express-validator';
+import {
+	query,
+	validationResult,
+	checkSchema,
+	matchedData,
+} from 'express-validator';
 import { validationSchema } from './utils/validationSchemas.mjs';
+import { User } from './mongoose/userSchema.mjs';
 
 const router = Router();
 
@@ -52,6 +58,25 @@ router.post(
 		res.status(201).send(newUser);
 	},
 );
+
+//using the db
+//* note checkSchema does not throw an error, needs to be coded manually
+router.post('/api/users', checkSchema(validationSchema), async (req, res) => {
+	const result = validationResult(req);
+	if (!result.isEmpty()) {
+		return res.status(400).send(res.array()); //this will tell us what errors or fields are missing/invalid
+	}
+	const data = matchedData(req); //returns only validated data from req
+	console.log(data);
+	const newUser = new User(data);
+	try {
+		const savedUser = await newUser.save();
+		return res.status(201).send(savedUser);
+	} catch (err) {
+		console.log(err);
+		return res.sendStatus(400);
+	}
+});
 
 export default router;
 //then import into index.mjs

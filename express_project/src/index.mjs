@@ -1,7 +1,12 @@
 import express from 'express';
 import users from './utils/userData.mjs';
 // import usersRouter from './routes/users.mjs';
-// import passort from './strategies/local-strategies.mjs';
+import passport from './strategies/local-strategies.mjs';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+// import session from 'express-session';
+
+dotenv.config();
 import {
 	query,
 	validationResult,
@@ -10,13 +15,23 @@ import {
 	checkSchema,
 } from 'express-validator';
 // import { handleUserById } from './utils/middleware.mjs';
-// import {validationSchema} from './utils/validationSchemas.mjs';
+
+// import { validationSchema } from './utils/validationSchemas.mjs';
 
 const app = express();
 
+mongoose
+	.connect(process.env.MONGODB_URI)
+	.then(() => {
+		console.log('Connected to MongoDB');
+	})
+	.catch((err) => {
+		console.log(`Error: ${err}`);
+	});
+
 //app.use(usersRouter); //using imported router can replace code for whatever is defined in routes/users.mjs for API endpoints grouped as domains
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 //MIDDLEWARE
 app.use(express.json()); //built in express middleware that parses JSON data from req.body
