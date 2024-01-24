@@ -44,7 +44,8 @@ add to route for specific routes:
 
 app.get('/users', <middleware-1>,<middleware-2>, etc, (req,res)=> {route logic})
 ----
-middleware is a function that runs between req and res cycle. It MUST be defined and app.use() it before the route handler (or inside the route handler before the route logic/req,res handler logic)
+middleware is a function that runs between req and res cycle. 
+**It MUST be defined - app.use() - before the route handler (or inside the route handler before the route logic/req,res handler logic)
 <handling req & res> middleware functions have access to req + res objects and (if) there is the next middleware function in the apps req,res cycle
 Middleware functions can be enabled globally (all routes) or used for specific routes/endpoints (pass as argument in that specific route/reused on multiple routes)
 
@@ -95,19 +96,26 @@ HTTP Cookies: https://en.wikipedia.org/wiki/HTTP_cookie
 https://expressjs.com/en/resources/middleware/cookie-parser.html
 - small pieces of data web server sends to client web browser
 - the browser can store the cookies and send them back to the server in future requests
---> this is relevant since HTTP is stateless (no memory of previous req) so cookies enable web servers to store stateful info on client device and respond with dynamic contextual data based on client for activities such as tracking activity, logging, saving form fields, password management, personalization, etc
+--> this is relevant since ! HTTP IS STATELESS ! (no memory of previous req) so cookies enable web servers to store stateful info on client device and respond with dynamic contextual data based on client for activities such as tracking activity, logging, saving form fields, password management, personalization, etc
 eg. Authentication cookies commonly used by web servers to authenticate that a user is logged in and on which account. Otherwise they would need to authenticate on every req.
 eg. Tracking cookies (especially 3rd party tracking cookies) used to compile records of client browsing history.
+
 TYPES - 
+
 1. session/in-memory/transient/non-persistent cookies - expire or deleted when user closes browser; exist only in temporary memory while a user is on a web page. (identified by browser from absencse of expirationn date or max-age attribute assigned to them)
+
 2. persistent cookies - cookies that last for a long/specific time set by cookie creator and are stored on the client device
 --> can be used for keeping users logged into accounts on websites; BUT also tracking
 --> info transmitted to server every time client visits website cookie belongs to (or views resource connected to that website on another website eg. advertisement)
+
 3. secure cookies - only sent over an encrypted connection (https) - made secure by adding 'Secure' flag in options - less likely to be exposed to eavesdropping cookie theft
+
 4.HTTP-only cookies - cannot be accessed by client side APIs (eg. JS). This restriction helps mitigate cross-site scripting (XSS) attacks BUT still vulnerable to cross-site tracing (XST) and cross-site request forgery (CSRF) <has 'HttpOnly' flag> in options
+
 5. Same-site cookies - cookies that are only sent in requests initiated from the same origin as the target domain. This restriction mitigates CSRF attacks by preventing the browser from sending the cookie along with cross-site requests. <has 'SameSite' flag> in options
 
 
+Example code:
 let cookieParser = require('cookie-parser')
 app.use(cookieParser(<'secret'>)); 
 
@@ -126,4 +134,57 @@ where options is an object eg. { signed: true, expires: new Date(Date.now() + 90
 if cookie is signed & options{ signed: true }, you can use 
 (req.signedCookies <cookieName>) 
 to access the parsed cookies, otherwise use req.cookies
+
+SESSIONS + USER AUTHENTICATION
+User Authentication:
+https://expressjs.com/en/resources/middleware/session.html
+- sessions are created and implemented on express server; 
+--> server sends cookie to client with session ID that gets saved in browser;  
+--> can parse cookies and use session ID to look up session data on server;
+--> subsequent client req will include session ID in cookie and server will parse cookie to JSON, verify and use session ID to look up session data  for that client on server
+- session data is not saved in the cookie itself, just the session ID. Session data is stored server-side.
+*(cookie-parser middelware no longer needs to be used for this module to work as it directly reads/writes cookies on req/res. Using cookie-parser may result in issues if the secret is not the same between this module and cookie-parser.)
+--> usually db is used to store session data (eg. MongoDB) but can also be stored in memory (not recommended for production) or in a file store (eg. session-file-store)
+Example code: 
+(note: to store or access session data use req.session; also has methods that can be chained eg. req.session.destroy/regenereate/reloaid/save/load)
+
+let session = require('express-session') //creates session middleware with <options>
+
+app.use(session({
+	name: 'sessionID',
+	proxy: true,
+	genid: (req) => {
+		returngenuuid
+		//function to call to generate session ID
+		//Provide a function that returns a string that will be used as a session ID. The function is given req as the first argument if you want to use some value attached to req when generating the ID.
+		//The default value is a function which uses the uid-safe library to generate IDs.
+	},
+	secret: 'keyboard cat', //used to sign the cookie
+	saveUninitialized: false, //if client just visting and not doing anything on website, unnecessary to use memory to save session (default is true)
+	resave: false, //if session is not modified, don't save, again to prevent unnecessary memory usage (default is true)
+	cookie: { secure: true, maxAge: 60000 * 60, httpOnly: true }
+}))
+
+(note:check session store implementation in express docs)
+req.sessionStore.get(req.session.id, (err, sessionData)=> {
+	if (err) {
+		return console.log(err);
+		throw err;
+	}
+	console.log(sessionData);
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ------------------------------------------------
