@@ -146,7 +146,7 @@ https://expressjs.com/en/resources/middleware/session.html
 *(cookie-parser middelware no longer needs to be used for this module to work as it directly reads/writes cookies on req/res. Using cookie-parser may result in issues if the secret is not the same between this module and cookie-parser.)
 --> usually db is used to store session data (eg. MongoDB) but can also be stored in memory (not recommended for production) or in a file store (eg. session-file-store)
 Example code: 
-(note: to store or access session data use req.session; also has methods that can be chained eg. req.session.destroy/regenereate/reloaid/save/load)
+*(note: to store or access session data use req.session; also has methods that can be chained eg. req.session.destroy/regenereate/reloaid/save/load)
 
 let session = require('express-session') //creates session middleware with <options>
 
@@ -174,13 +174,63 @@ req.sessionStore.get(req.session.id, (err, sessionData)=> {
 	console.log(sessionData);
 })
 
+example usage - purpose to modify session obj so only one sessionID is generated for the user by express (sent through cookie) and then used to look up session data and identify user during the session. server receives cookie, parses it and map session id from cookie with session data on server for that client.
 
+app.post('/api/auth', (req, res)=>{
+	const { username, password} = req.body;
+	const fundUser = users.find(user => user.username === username);
+	if(!findUser || findUser.password !== password){
+		return res.status(401).send({msg: 'Wrong username or password'})
+	}
+	req.session.user = findUser;
+	return res.status(200).send({msg: 'Logged in'})
+})
 
+app.get('/api/auth/status, (req, res)=>{
+	reqq.sessionStore.get(req.session.id, (err, sessionData)=> {
+		console.log(sessionData);
+	})
+	return req.session.user ? res.status(200).send(req.session.user): res.status(401).send({msg: 'Not logged in'})
+})
+ (note: connect.sid is the default name of the session ID cookie set by the express-session middleware in Express.js.
 
+When a client makes a request to an Express.js server that uses express-session, the middleware will set a cookie named connect.sid in the client's browser with a unique session ID. This session ID is used to identify the client in subsequent requests.
 
+The session ID is used to look up session data stored on the server. This data can include anything you want to persist across requests from the same client, such as user authentication status or user preferences.
 
+You can customize the name of the session ID cookie by setting the name option in the express-session configuration)
 
+------------------------------------------------
+Passport.js Authentication middleware for Node/Express - https://www.passportjs.org/
+https://www.passportjs.org/packages/ - has passport-<strategies> that can be used depending on need (eg. twitter, jwt, facebook etc)
+-integrates very well with express, express-session
+strategies/local-strategies.mjs
 
+app.use(passport.initialize()) //initializes passport
+app.use(passport.session()) //adds session support
+(check stratgies/local-strategy.mjs)
+
+passport needs to serialize the user/client into the session using 2 functions - serializeUser and deserializeUser
+takes user obj and stores it in the session
+https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});              │
+                 │ 
+                 │
+                 └─────────────────┬──→ saved to session
+                                   │    req.session.passport.user = {id: '..'}
+                                   │
+                                   ↓           
+passport.deserializeUser(function(id, done) {
+                   ┌───────────────┘
+                   │
+                   ↓ 
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });            └──────────────→ user object attaches to the request as req.user   
+});
+--> so the deserializeUser function uses the id from the session and looks up the user in the database and attaches it to the request as req.user so that you can use it in your request handlers.
 
 
 

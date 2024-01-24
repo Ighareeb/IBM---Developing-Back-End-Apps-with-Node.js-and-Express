@@ -1,6 +1,7 @@
 import express from 'express';
 import users from './utils/userData.mjs';
 // import usersRouter from './routes/users.mjs';
+// import passort from './strategies/local-strategies.mjs';
 import {
 	query,
 	validationResult,
@@ -14,6 +15,8 @@ import {
 const app = express();
 
 //app.use(usersRouter); //using imported router can replace code for whatever is defined in routes/users.mjs for API endpoints grouped as domains
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 //MIDDLEWARE
 app.use(express.json()); //built in express middleware that parses JSON data from req.body
@@ -152,6 +155,30 @@ app.delete('/api/users/:id', (req, res) => {
 app.get('/api/products', (req, res) => {
 	res.status(200).send({ msg: 'Products' });
 });
+
+//setting up passport auth endpoint
+//passport.authenticate( <strategy>, ?<callback> )
+app.post('/api/auth', passport.authenticate('local'), (req, res) => {
+	res.sendStatus(200);
+});
+app.get('/api/auth/status', (req, res) => {
+	console.log('Inside /auth/status endpoint');
+	console.log(req.user);
+	console.log(req.session);
+	return req.user ? res.send(req.user) : res.sendStatus(401);
+});
+app.post('/api/auth/logout', (req, res) => {
+	if (!req.user) {
+		return res.sendStatus(401);
+	}
+	req.logout((err) => {
+		if (err) {
+			return res.sendStatus(400);
+		}
+		return res.sendStatus(200);
+	});
+});
+//note cookies would still be present on client after logout but would not be valid for the server
 
 const PORT = process.env.PORT || 3000;
 //returns node http.Server (express server) to start listening on port for HTTP requests
