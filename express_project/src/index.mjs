@@ -3,6 +3,7 @@ import users from './utils/userData.mjs';
 // import usersRouter from './routes/users.mjs';
 import passport from './strategies/local-strategies.mjs';
 import mongoose from 'mongoose';
+// import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
 // import session from 'express-session';
 
@@ -10,7 +11,6 @@ dotenv.config();
 import {
 	query,
 	validationResult,
-	body,
 	matchedData,
 	checkSchema,
 } from 'express-validator';
