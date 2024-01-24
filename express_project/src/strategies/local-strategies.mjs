@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import users from '../utils/userData.mjs';
+import { User } from '../mongoose/userSchema.mjs';
 
 //done(err, ?user, ?info) provided by passport.js
 //serializing user by id in this case so req.session with have passport: {user: user.id} (you could serialize with anything you want, id is unique identifier so a better choice + data that isn't sensitive to session/going to change like a username + don't store unnecessary props in session data)
@@ -10,10 +11,10 @@ passport.serializeUser((user, done) => {
 	done(null, user.id); //pass user.id so easy to search for user + this is what gets passed to deserializeUser
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
 	console.log(`Inside deserializeUser: ${id}`);
 	try {
-		const findUser = users.find((user) => user.id === id); //search for user in array or db
+		const findUser = await User.findById(id); //using mongoose method to find user by id
 		if (!findUser) {
 			throw new Error('User not found');
 		}
@@ -26,22 +27,20 @@ passport.deserializeUser((id, done) => {
 passport.use(
 	// Strategy(options: IStrategyOptionsWithRequest, verify: VerifyFunctionWithRequest): Strategy
 	new Strategy(
-		//options
-		{ usernameField: 'username', passwordField: 'password' },
+		//options eg.
+		// { usernameField: 'username', passwordField: 'password' },
 		//verify function
 		//main purpose is to validate user (actually exists + client-password sent to server === user-password in db)
 		//(passport searches for) function args get passed from req.body made to auth API for user authentication
-		(username, password, done) => {
+		async (username, password, done) => {
 			try {
-				const findUser = users.find((user) => {
-					console.log(`Username: ${username} Password: ${password}`);
-					user.username === username;
-				});
+				//find user with mongoose method matching provided arg search criteria - method will also throw any errors
+				const findUser = await User.findOne({ username: username });
 				if (!findUser) {
 					throw new Error('User not found');
 				}
 				if (findUser.password !== password) {
-					throw new Error('Password incorrect');
+					throw new Error('Incorrect password');
 				}
 				done(null, findUser);
 			} catch (err) {
