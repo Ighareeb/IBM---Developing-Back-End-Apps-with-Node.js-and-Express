@@ -8,6 +8,7 @@ import {
 } from 'express-validator';
 import { validationSchema } from './utils/validationSchemas.mjs';
 import { User } from './mongoose/userSchema.mjs';
+import { hashPassword } from '../utils/hash.mjs';
 
 const router = Router();
 
@@ -34,7 +35,7 @@ router.get('/api/users', (req, res) => {
 	return res.status(200).send(users);
 });
 
-//POST create new user + body express-validator + isEmpty() & matchedData()
+//POST create new user + body express-validator + isEmpty() & matchedData() + bcrypt hashing
 router.post(
 	'/api/users',
 	body('username')
@@ -44,7 +45,7 @@ router.post(
 		.withMessage('Username must be between 5 and 32 characters')
 		.isString()
 		.withMessage('Username must be a string'),
-	(req, res) => {
+	async (req, res) => {
 		const result = validationResult(req);
 		console.log(result);
 		if (!result.isEmpty()) {
@@ -52,10 +53,17 @@ router.post(
 		}
 		// const { body } = req;
 		// const newUser = { id: users.length + 1, ...body };
-		const validData = matchedData(req); //returns only validated data from req
-		const newUser = { id: users.length + 1, ...validData };
-		users.push(newUser);
-		res.status(201).send(newUser);
+		const validData = matchedData(req); //returns only validated data from req body
+		validData.password = await hashPassword(validData.password);
+		console.log(validData);
+		const newUser = new User(validData);
+		try {
+			const savedUser = await newUser.save();
+			return res.status(201).send(savedUser);
+		} catch (err) {
+			console.log(err);
+			return res.sendStatus(400);
+		}
 	},
 );
 
