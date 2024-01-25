@@ -18,6 +18,10 @@ import {
 
 // import { validationSchema } from './utils/validationSchemas.mjs';
 
+//import the local strategy - or the OAuth strategy library you are using (after installing it)
+// import './strategies/discord-strategy.mjs';
+//then send up endpoint to use that strategy
+
 const app = express();
 
 mongoose
@@ -194,6 +198,19 @@ app.post('/api/auth/logout', (req, res) => {
 	});
 });
 //note cookies would still be present on client after logout but would not be valid for the server
+
+//OAuth endpoint
+app.get('/api/auth/discord', passport.authenticate('discord'));
+//redirect/callback endpoint after user is authenticated which exchanges code for access token
+app.get(
+	'/api/auth/discord/redirect',
+	passport.authenticate('discord'),
+	(req, res) => {
+		console.log(req.session);
+		console.log(req.user);
+		res.sendStatus(200);
+	},
+);
 
 const PORT = process.env.PORT || 3000;
 //returns node http.Server (express server) to start listening on port for HTTP requests

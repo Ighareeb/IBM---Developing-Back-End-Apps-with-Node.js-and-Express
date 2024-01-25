@@ -9,7 +9,7 @@ import { hashPassword, comparePassword } from '../utils/hash.mjs';
 passport.serializeUser((user, done) => {
 	console.log(`Inside serializeUser: ${user.id}`);
 	//user accessed from verify function below
-	done(null, user.id); //pass user.id so easy to search for user + this is what gets passed to deserializeUser
+	return done(null, user.id); //pass user.id so easy to search for user + this is what gets passed to deserializeUser
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -19,9 +19,9 @@ passport.deserializeUser(async (id, done) => {
 		if (!findUser) {
 			throw new Error('User not found');
 		}
-		done(null, findUser); //user obj attaches to the request obj as req.user
+		return done(null, findUser); //user obj attaches to the request obj as req.user
 	} catch (err) {
-		done(err, null);
+		return done(err, null);
 	}
 });
 

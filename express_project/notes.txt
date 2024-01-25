@@ -231,6 +231,27 @@ passport.deserializeUser(function(id, done) {
     });            └──────────────→ user object attaches to the request as req.user   
 });
 --> so the deserializeUser function uses the id from the session and looks up the user in the database and attaches it to the request as req.user so that you can use it in your request handlers.
+
+SETTING UP OAtuth 2 app in passport.js
+https://oauth.net/2/
+https://developers.google.com/identity/protocols/oauth2
+allows you to use ,integrate 3rd party providers (eg. facebook, google, X) to authenticate users instead of creating your own authentication system (local username and password)
+example using Disord:
+-go to https://discord.com/developers/applications
+1. create app (name)
+2. OAuth2 tools section --> copy client id (just identifies app id) and secret (secret must be kept private!)
+3. Add Redirect and implement in app/passport - 
+3a. Install appropriate strategy package/library (eg. npm i passport-discord)
+3b. Add endpoint for user to authenticate 
+3c. Add redirect endpoint that is used after user is authenticated
+
+How it works - 
+-ADD REDIRECTS - flow of process is that req needs to be sent to endpoint that redirects to 3rd party OAuth provider we want to use to authenticate with.
+i.e. set up endpoint that calls passport and redirects to 3rd party OAuth provider
+-client/user is redirected after being authenticated by 3rd party provider (which shows them permissions/scopes the client wants to allow the app to use)
+-3rd party provider then redirects back to our app with the REDIRECT/CALLBACK URL we specified wwhen setting up the provider
+-This redirect includes an autherization code for an access token which can be used to make authenticated client req to the server
+(ensure that the redirect URL is a secure (https) URL to prevent interception of the authorization code.)
 ------------------------------------------------
 mongoose  
 -schema = defines database collection structure.
