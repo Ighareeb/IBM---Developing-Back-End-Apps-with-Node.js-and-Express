@@ -282,12 +282,23 @@ app.use(session({
 	saveUninitialized: false,
 	cookie:{maxAge: 1000 * 60 * 60 * 24}
 	}))
+------------------------------------------------
+UNIT TESTING + Jest
+https://jestjs.io/docs/getting-started - META
+Jest testing framework used for any JS type of app (node, express, react etc)
+*will use Jest with commonJS - however since the project is using ES6 we need to use babel to convert it to commonJS so that it can be tested (check Additional Configuration in docs)
+npm i -D @babel/core @babel/node @babel/preset-env jest
+add .babelrc file JSON config file for the compiler
+then set up jest config file (npm init jest@latest, npm i -D @types/jest) + change transform prop from undefined to 	transform: { '^.+\\.m?js$': 'babel-jest' } to allow babel-jest to transform .mjs/.js files before testing them + uncomment moduleFileExtensions prop
+then root package.json - add "test": "jest" to scripts prop 
+then create __tests__ folder in root directory(/src) and add test files
+then create new folder with functions copied that you want to test so they can be imported into relevant test files /src/handlers
+npm run test
 
+separating concerns/functionality in your code allows for more effective/easy testing
+with more complex functions you are creating dependencies on other code that can make it harder to test accurately/easily
 
-
-
-
-
+*unit testing - focus on one small part of code (eg. function) and test it in isolation eg. on a route endpoint testing the findUser function/conditional
 
 
 
