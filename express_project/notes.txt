@@ -305,11 +305,16 @@ with more complex functions you are creating dependencies on other code that can
 implementation testing - verify that the code works as expected based on params etc. eg. function code does what it is supposed to do
 behavioural testing - just give any input and see if the output is as expected - used more on FE like with React app functions to test based on output without worrying about things like state or form fields or what is being called to the API
 ------------------------------------------------
-e2e - end to end testing
-testing the entire application from start to finish
+Integration + e2e(end to end) testing
+-Testing the entire application from start to finish. Testing scenarios/flows in the app 
+-don't set up mocks - eg. call APIs and write assertions for expectations
+-in this project using supertest which integrates well with Jest
 
-
-
+need to get app instance to use in <request from 'supertest'> -
+In this project example have exported app using (createApp.mjs) 
+export function createApp(app){} and paste all your app code that you need to the testing (in this project only local test example so things to do with db not needed)
+(don't forget to import all required middleware as well)
+this would be ok for development
 
 
 
